@@ -93,10 +93,10 @@ public class DecoreControl : MonoBehaviour
         Vector3 randomOffset = new Vector3(
                 Random.Range(-randomDirrectionFactor, randomDirrectionFactor),
                 Random.Range(-randomDirrectionFactor, randomDirrectionFactor),
-                Random.Range(-randomDirrectionFactor, randomDirrectionFactor)
+                Random.Range(-randomDirrectionFactor, 0)
             );
 
-        Vector3 finalDirection = (baseDirection + randomOffset).normalized;
+        Vector3 finalDirection = (-baseDirection + randomOffset).normalized;
         _thisTransform.SetParent(null);
         Rigid.AddForce(finalDirection * forcevalue, ForceMode.Impulse);
         if (gameObject.activeSelf && gameObject.activeInHierarchy) StartCoroutine(DisablePhysicComponent());
