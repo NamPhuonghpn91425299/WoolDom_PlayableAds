@@ -93,7 +93,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5149792449305618333}
   - component: {fileID: 2510134583101358957}
-  - component: {fileID: 1315057050502679902}
   m_Layer: 6
   m_Name: RollWool
   m_TagString: Untagged
@@ -138,19 +137,6 @@ MonoBehaviour:
   - {fileID: 7747172728833061970}
   - {fileID: 3139742300462387812}
   _localScale: {x: 0, y: 0, z: 0}
---- !u!114 &1315057050502679902
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2594109155775345338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99d1ca7760914f3ebfe979a6d1d4e0d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waitTime: 0
 --- !u!1 &2874321475390319083
 GameObject:
   m_ObjectHideFlags: 0
