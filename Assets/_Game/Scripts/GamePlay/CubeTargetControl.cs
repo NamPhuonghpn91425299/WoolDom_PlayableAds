@@ -134,7 +134,6 @@ public class CubeTargetControl : MonoBehaviour
             if (child.childCount < 1) continue;
             var rollWool = child.GetChild(0);
             rollWool.parent = null;
-            ObjectPool.Instance.AddToPool(rollWool.gameObject, 1, null);
             rollWool.gameObject.SetActive(false);
         }
         if (_indexCube == -1) return;
