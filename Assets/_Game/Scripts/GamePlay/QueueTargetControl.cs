@@ -36,7 +36,6 @@ public class QueueTargetControl : MonoBehaviour
         if(transform.childCount < 2) return;
         var roll = transform.GetChild(1);
         roll.SetParent(null);
-        ObjectPool.Instance.AddToPool(roll.gameObject, 1);
         roll.gameObject.SetActive(false);
     }
     public Color GetColorQueue() => _currentColor;
