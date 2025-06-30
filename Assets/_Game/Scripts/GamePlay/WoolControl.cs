@@ -20,8 +20,8 @@ public class WoolControl : MonoBehaviour
     public bool debugUV;
 
     [Header("Mesh Object")] public MeshObjectData    MeshObjectData;
-    public                         MeshRenderer      TopMeshRenderer;
-    public                         MeshRenderer      HideMeshRenderer;
+    public                         Renderer      TopMeshRenderer;
+    public                         Renderer      HideMeshRenderer;
     public                         Collider          BoxCollider;
     public                         Material          MainMaterial;
     public                         Material          TranparentMaterial;

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Unity.VisualScripting;
 #if UNITY_EDITOR
 using JetBrains.Annotations;
 using UnityEditor;
@@ -27,7 +26,7 @@ public class GamePlayMeshController : MonoBehaviour
     public                    WoolAnimationData           WoolAnimationData;
 
     private List<Color> _currentColorList      = new ();
-    public  int          TotalColor  { get; private set; }
+    public int TotalColor;
 
     public Material WoolMaterial;
     public Material WoolChildMaterial;
@@ -206,8 +205,11 @@ public class GamePlayMeshController : MonoBehaviour
         var                     meshCount             = WoolControls.Count;
         var                     minLayer              = Mathf.Clamp(_currentLayer - MaxLayerHasThreeSameColor + 1, 1, _maxLayer);
         List<ColorDistribution> colorDistributionList = new List<ColorDistribution>();
+        int countBreak = 0;
         while (_colorRemainCount > 0)
         {
+            if (countBreak++ > 100000)
+                break;
             for (int i = 0; i < meshCount; i++)
             {
                 var maxLayer = WoolControls[i].MeshObjectData.TotalLayer - 1;
