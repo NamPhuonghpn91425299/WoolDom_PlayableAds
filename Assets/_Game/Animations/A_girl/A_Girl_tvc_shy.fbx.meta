@@ -60,7 +60,7 @@ ModelImporter:
       - time: 0.08455882
         functionName: RaiseVoice
         data: 
-        objectReferenceParameter: {instanceID: 0}
+        objectReferenceParameter: {fileID: 11500000, guid: 9e94c4a7e09630f4492309dba6ba343f, type: 3}
         floatParameter: 0
         intParameter: 1
         messageOptions: 0
@@ -96,7 +96,7 @@ ModelImporter:
       - time: 0.08823529
         functionName: RaiseVoice
         data: 
-        objectReferenceParameter: {instanceID: 0}
+        objectReferenceParameter: {fileID: 11500000, guid: 9e94c4a7e09630f4492309dba6ba343f, type: 3}
         floatParameter: 0
         intParameter: 1
         messageOptions: 0

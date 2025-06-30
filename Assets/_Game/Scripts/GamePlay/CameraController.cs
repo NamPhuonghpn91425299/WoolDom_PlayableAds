@@ -2,6 +2,7 @@ using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 using System;
+using Random = UnityEngine.Random;
 
 public class CameraController : Singleton<CameraController>
 {
@@ -17,13 +18,14 @@ public class CameraController : Singleton<CameraController>
     private Transform  modelTransfrom;
     public  Quaternion targetRotation;
 
-    public float   Friction            = 3f;             // The speed of decay of inertia
-    public Vector2 RotationSensitivity = new (1f,   1f); // Giới hạn tốc độ xoay
-    public Vector2 AccelerationRange   = new (0.1f, 1f); // Giới hạn tốc độ xoay
-    public float   RotationSpeed       = 5f;             // Tốc độ xoay
-    public float   RotationAutoSpeed   = 0.5f;           // Tốc độ xoay tự động
-    public float   SmoothingTime       = 0.05f;
-
+    public float      Friction            = 3f;             // The speed of decay of inertia
+    public Vector2    RotationSensitivity = new (1f,   1f); // Giới hạn tốc độ xoay
+    public Vector2    AccelerationRange   = new (0.1f, 1f); // Giới hạn tốc độ xoay
+    public float      RotationSpeed       = 5f;             // Tốc độ xoay
+    public float      RotationAutoSpeed   = 0.5f;           // Tốc độ xoay tự động
+    public float      SmoothingTime       = 0.05f;
+    [Header("Rotation")]
+    
     public float TimeAFKToAutoRotation = 10f;
 
     private float   _acceleration;
@@ -129,7 +131,7 @@ public class CameraController : Singleton<CameraController>
 
         if (_isDragging || _timeIdle > 0)
         {
-            if (DragStyle == DraggingStyle.Smoothly)
+            if (DragStyle == DraggingStyle.Smoothly || DragStyle == DraggingStyle.SmoothlyYAxis)
             {
                 modelTransfrom.rotation = Quaternion.Slerp(modelTransfrom.rotation, targetRotation, Time.deltaTime * SmoothFactor);
             }
@@ -154,10 +156,18 @@ public class CameraController : Singleton<CameraController>
         }
 
         if (_isClicking) return;
-        if (_timeIdle <= 0f) SpawnPoint.Rotate(0f,  RotationAutoSpeed * _acceleration * RotationSensitivity.x, 0f, Space.World);
-
-        if (_timeIdle <= 0f) SpawnPoint.Rotate(0f,  RotationAutoSpeed * _acceleration * RotationSensitivity.x, 0f, Space.World);
-        else _timeIdle -= Time.deltaTime;
+        
+        if (_timeIdle <= 0f)
+        {
+            if (DragStyle == DraggingStyle.SmoothlyYAxis)
+                SpawnPoint.Rotate(0f, RotationAutoSpeed * _acceleration * RotationSensitivity.x, 0f, Space.World);
+            else
+                SpawnPoint.Rotate(Vector3.up, RotationAutoSpeed * _acceleration * RotationSensitivity.x, Space.World);
+        }
+        else 
+        {
+            _timeIdle -= Time.deltaTime;
+        }
     }
 
     #endregion
@@ -212,6 +222,8 @@ public class CameraController : Singleton<CameraController>
             {
                 var objectTarget = (WoolControl)wool;
                 objectTarget.WoolRotation();
+                GamePlaySystem.Instance.RaiseMotion(EMotionType.Shy, Random.value);
+                Debug.Log("Tap");
             }
         }
     }
@@ -285,8 +297,16 @@ public class CameraController : Singleton<CameraController>
             return;
         }*/
 
-        Vector3 rotateDir = new Vector3(pos.y, -pos.x, 0f) * RotationSpeed;
-        ModelPrefab.transform.Rotate(rotateDir, Space.World);
+        if (DragStyle == DraggingStyle.SmoothlyYAxis)
+        {
+            float yRotation = -pos.x * RotationSpeed;
+            ModelPrefab.transform.Rotate(0f, yRotation, 0f, Space.World);
+        }
+        else
+        {
+            Vector3 rotateDir = new Vector3(pos.y, -pos.x, 0f) * RotationSpeed;
+            ModelPrefab.transform.Rotate(rotateDir, Space.World);
+        }
         OnHandleDragWoolAction?.Invoke();
     }
 
@@ -299,12 +319,25 @@ public class CameraController : Singleton<CameraController>
             if (OnZoomCamera()) return;
         }
         else if (isZooming) return;
+        
+        // Check if we should handle rotation based on drag style
+        bool isYAxisMode = DragStyle == DraggingStyle.SmoothlyYAxis;
+        bool isSmoothMode = DragStyle == DraggingStyle.Smoothly || DragStyle == DraggingStyle.SmoothlyYAxis;
 
         _isDragging = true;
-        Vector3 rotateDir = new Vector3(pos.y, -pos.x, 0f) * DraggingSpeed;
-
-        Quaternion delta = Quaternion.Euler(rotateDir);
-        targetRotation = delta * targetRotation;
+        
+        if (DragStyle == DraggingStyle.SmoothlyYAxis)
+        {
+            float yRotation = -pos.x * DraggingSpeed;
+            Quaternion delta = Quaternion.Euler(0f, yRotation, 0f);
+            targetRotation = delta * targetRotation;
+        }
+        else
+        {
+            Vector3 rotateDir = new Vector3(pos.y, -pos.x, 0f) * DraggingSpeed;
+            Quaternion delta = Quaternion.Euler(rotateDir);
+            targetRotation = delta * targetRotation;
+        }
         OnHandleDragWoolAction?.Invoke();
     }
 
@@ -527,10 +560,12 @@ public class CameraController : Singleton<CameraController>
     #endregion
 }
 
+
 public enum DraggingStyle
 {
     Instantly,
-    Smoothly
+    Smoothly,
+    SmoothlyYAxis
 }
 
 public enum ZoomCameraStyle

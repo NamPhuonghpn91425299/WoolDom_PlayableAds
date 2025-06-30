@@ -13,7 +13,7 @@ using DG.Tweening;
 
 /// và điều phối các hiệu ứng animation.
 /// </summary>
-public class GamePlaySystem : Singleton<GamePlaySystem>
+public partial class GamePlaySystem : Singleton<GamePlaySystem>
 {
     #region <====================| Properties |====================>
 
@@ -462,12 +462,13 @@ public class GamePlaySystem : Singleton<GamePlaySystem>
             {
                 _isWinGame = true;
                 TrackingEndGame(false, true);
+                endGamePanel.SetActive(true);
             }
         }
         else
         {
             if (loseSound != null) SoundManager.Instance.PlayOneShot(loseSound, 1f);
-            endGamePanel.SetActive(true);
+            //endGamePanel.SetActive(true);
         }
     }
 
@@ -555,7 +556,7 @@ public class GamePlaySystem : Singleton<GamePlaySystem>
         var         copyListMove = listRemove;
         if (!alowSameColor)
         {
-            for (int i = 0; i < CurrentCubeTargets.Count; i++)
+            for (int i = 0; i < listReference.Length && i < CurrentCubeTargets.Count; i++)
             {
                 if (listReference[i] == Color.black) continue;
                 copyListMove.Remove(listReference[i]);

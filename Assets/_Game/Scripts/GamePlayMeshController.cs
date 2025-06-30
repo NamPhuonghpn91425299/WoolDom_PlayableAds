@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AYellowpaper.SerializedCollections;
 #if UNITY_EDITOR
 using JetBrains.Annotations;
 using UnityEditor;
@@ -47,6 +48,9 @@ public class GamePlayMeshController : MonoBehaviour
     [SerializeField] private float           _maxDistanceFromCetner;
 
     #endregion
+    [SerializeField] public Animator        MainMotionAnimator;
+    [SerializeField] public AudioSource MainAudioSource;
+    public AudioClip[] MotionAudioClips;
 
     #region UNITY_METHODS
 
@@ -60,6 +64,7 @@ public class GamePlayMeshController : MonoBehaviour
 
         WoolMaterial      = woolMaterial;
         WoolChildMaterial = woolChildMaterial;
+        MainMotionAnimator ??= GetComponent<Animator>();
     }
 #endif
 
@@ -67,6 +72,20 @@ public class GamePlayMeshController : MonoBehaviour
 
     #region MAIN_METHODS
 
+    
+    public void RaiseVoice(int voiceIndex)
+    {
+
+        if (MotionAudioClips != null)
+        {
+            MainAudioSource.clip = MotionAudioClips[voiceIndex - 1];
+            MainAudioSource.Play();
+        }
+        else
+        {
+            Debug.LogWarning($"No audio clip found for voice index: {voiceIndex}");
+        }
+    }
     public void LoadcolorForMesh()
     {
         LoadLevel();
@@ -94,6 +113,7 @@ public class GamePlayMeshController : MonoBehaviour
             for (int i = 0; i < LevelData.ColorList.Count; i++)
             {
                 CubeCount.Add(LevelData.ColorList[i], LevelData.ColorCountList[i] / 3);
+
                 TotalColor += LevelData.ColorCountList[i];
             }
 
